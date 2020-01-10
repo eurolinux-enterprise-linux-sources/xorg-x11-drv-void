@@ -2,32 +2,43 @@
 %global moduledir %(pkg-config xorg-server --variable=moduledir )
 %global driverdir %{moduledir}/input
 
+#global gitdate 20101202
+#global gitversion cb8d19b8a
+
 Summary:   Xorg X11 void input driver
 Name:      xorg-x11-drv-void
 Version:   1.4.0
-Release:   3%{?dist}
+Release:   23%{?gitdate:.%{gitdate}git%{gitversion}}%{?dist}
 URL:       http://www.x.org
 License:   MIT
 Group:     User Interface/X Hardware Support
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Source0:   ftp://ftp.x.org/pub/individual/driver/%{tarball}-%{version}.tar.bz2
+%if 0%{?gitdate}
+Source0:    %{tarball}-%{gitdate}.tar.bz2
+Source1:    make-git-snapshot.sh
+Source2:    commitid
+%else
+Source0:    ftp://ftp.x.org/pub/individual/driver/%{tarball}-%{version}.tar.bz2
+%endif
+
 
 ExcludeArch: s390 s390x
 
-BuildRequires: xorg-x11-server-sdk >= 1.10.0-1
+BuildRequires: autoconf automake libtool
+BuildRequires: xorg-x11-server-devel >= 1.10.99.902
 BuildRequires: xorg-x11-util-macros >= 1.3.0
 
-Requires:  Xorg %(xserver-sdk-abi-requires ansic)
-Requires:  Xorg %(xserver-sdk-abi-requires xinput)
+Requires: Xorg %(xserver-sdk-abi-requires ansic)
+Requires: Xorg %(xserver-sdk-abi-requires xinput)
 
 %description 
 X.Org X11 void input driver.
 
 %prep
-%setup -q -n %{tarball}-%{version}
+%setup -q -n %{tarball}-%{?gitdate:%{gitdate}}%{!?gitdate:%{version}}
 
 %build
+autoreconf --force -v --install || exit 1
 %configure --disable-static
 make
 
@@ -50,21 +61,102 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man4/void.4*
 
 %changelog
-* Wed Aug 22 2012 Peter Hutterer <peter.hutterer@redhat.com> - 1.4.0-3
-- Rebuild for server 1.13
+* Wed Jan 15 2014 Adam Jackson <ajax@redhat.com> - 1.4.0-23
+- 1.15 ABI rebuild
 
-* Wed Aug 01 2012 Peter Hutterer <peter.hutterer@redhat.com> - 1.4.0-2
-- Rebuild for server 1.13 (#835264)
+* Fri Dec 27 2013 Daniel Mach <dmach@redhat.com> - 1.4.0-22
+- Mass rebuild 2013-12-27
 
-* Mon Jun 27 2011 Peter Hutterer <peter.hutterer@redhat.com> 1.4.0-1
-- void 1.4.0 (#713843)
+* Wed Nov 06 2013 Adam Jackson <ajax@redhat.com> - 1.4.0-21
+- 1.15RC1 ABI rebuild
+
+* Fri Oct 25 2013 Adam Jackson <ajax@redhat.com> - 1.4.0-20
+- ABI rebuild
+
+* Sun Aug 04 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.4.0-19
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
+* Wed Apr 03 2013 Peter Hutterer <peter.hutterer@redhat.com> 1.4.0-18
+- Force autoreconf
+
+* Tue Mar 19 2013 Adam Jackson <ajax@redhat.com> 1.4.0-17
+- Less RHEL customization
+
+* Thu Mar 07 2013 Peter Hutterer <peter.hutterer@redhat.com> - 1.4.0-16
+- ABI rebuild
+
+* Fri Feb 15 2013 Peter Hutterer <peter.hutterer@redhat.com> - 1.4.0-15
+- ABI rebuild
+
+* Fri Feb 15 2013 Peter Hutterer <peter.hutterer@redhat.com> - 1.4.0-14
+- ABI rebuild
+
+* Thu Jan 10 2013 Adam Jackson <ajax@redhat.com> - 1.4.0-13
+- ABI rebuild
+
+* Fri Nov 09 2012 Peter Hutterer <peter.hutterer@redhat.com> - 1.4.0-12
+- Fix {?dist} tag
+
+* Sun Jul 22 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.4.0-11
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
+* Wed Jul 18 2012 Dave Airlie <airlied@redhat.com> - 1.4.0-10
+- ABI rebuild
+
+* Thu Apr 05 2012 Adam Jackson <ajax@redhat.com> - 1.4.0-9
+- RHEL arch exclude updates
+
+* Sat Feb 11 2012 Peter Hutterer <peter.hutterer@redhat.com> - 1.4.0-8
+- ABI rebuild
+
+* Fri Feb 10 2012 Peter Hutterer <peter.hutterer@redhat.com> - 1.4.0-7
+- ABI rebuild
+
+* Tue Jan 24 2012 Peter Hutterer <peter.hutterer@redhat.com> - 1.4.0-6
+- ABI rebuild
+
+* Wed Jan 04 2012 Peter Hutterer <peter.hutterer@redhat.com> - 1.4.0-5
+- Rebuild for server 1.12
+
+* Mon Nov 14 2011 Adam Jackson <ajax@redhat.com> - 1.4.0-4
+- ABI rebuild
+
+* Wed Nov 09 2011 ajax <ajax@redhat.com> - 1.4.0-3
+- ABI rebuild
+
+* Thu Aug 18 2011 Adam Jackson <ajax@redhat.com> - 1.4.0-2
+- Rebuild for xserver 1.11 ABI
+
+* Tue Jun 21 2011 Adam Jackson <ajax@redhat.com> 1.4.0-1
+- void 1.4.0
+
+* Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.3.1-4.20101202gitcb8d19b8a
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
+* Thu Dec 02 2010 Peter Hutterer <peter.hutterer@redhat.com> 1.3.1-3.20101202gitcb8d19b8a
+- add commitid and snapshot file
+
+* Thu Dec 02 2010 Peter Hutterer <peter.hutterer@redhat.com> 1.3.1-2.20101202gitcb8d19b8a
+- Add git hooks, update to today's snapshot
+
+* Mon Nov 01 2010 Peter Hutterer <peter.hutterer@redhat.com> 1.3.1-1
+- void 1.3.1
+
+* Wed Oct 27 2010 Adam Jackson <ajax@redhat.com> 1.3.0-7
+- Add ABI requires magic (#542742)
+
+* Mon Jul 05 2010 Peter Hutterer <peter.hutterer@redhat.com> - 1.3.0-6
+- rebuild for X Server 1.9
+
+* Thu Jan 21 2010 Peter Hutterer <peter.hutterer@redhat.com> - 1.3.0-5
+- Rebuild for server 1.8
 
 * Wed Jan 06 2010 Peter Hutterer <peter.hutterer@redhat.com> 1.3.0-4
 - Use global instead of define as per Packaging Guidelines 
 
 * Wed Jan 06 2010 Peter Hutterer <peter.hutterer@redhat.com> 1.3.0-3
-- Silence rpmlint tab/spaces warning.
-- Move COPYING under defattr to ensure the right attributes.
+- Silence rpmlint spaces/tabs warning.
+- move COPYING under defattr to get the right attr.
 
 * Fri Sep 11 2009 Peter Hutterer <peter.hutterer@redhat.com> 1.3.0-2
 - Require xorg-x11-util-macros 1.3.0
