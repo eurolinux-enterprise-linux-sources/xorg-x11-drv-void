@@ -4,8 +4,8 @@
 
 Summary:   Xorg X11 void input driver
 Name:      xorg-x11-drv-void
-Version:   1.3.0
-Release:   4%{?dist}
+Version:   1.4.0
+Release:   1%{?dist}
 URL:       http://www.x.org
 License:   MIT
 Group:     User Interface/X Hardware Support
@@ -15,10 +15,11 @@ Source0:   ftp://ftp.x.org/pub/individual/driver/%{tarball}-%{version}.tar.bz2
 
 ExcludeArch: s390 s390x
 
-BuildRequires: xorg-x11-server-sdk >= 1.4.99.1
+BuildRequires: xorg-x11-server-sdk >= 1.10.0-1
 BuildRequires: xorg-x11-util-macros >= 1.3.0
 
-Requires:  xorg-x11-server-Xorg >= 1.4.99.1
+Requires:  Xorg %(xserver-sdk-abi-requires ansic)
+Requires:  Xorg %(xserver-sdk-abi-requires xinput)
 
 %description 
 X.Org X11 void input driver.
@@ -49,6 +50,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man4/void.4*
 
 %changelog
+* Mon Jun 27 2011 Peter Hutterer <peter.hutterer@redhat.com> 1.4.0-1
+- void 1.4.0 (#713843)
+
 * Wed Jan 06 2010 Peter Hutterer <peter.hutterer@redhat.com> 1.3.0-4
 - Use global instead of define as per Packaging Guidelines 
 
