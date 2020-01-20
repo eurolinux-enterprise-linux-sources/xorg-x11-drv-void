@@ -8,7 +8,7 @@
 Summary:   Xorg X11 void input driver
 Name:      xorg-x11-drv-void
 Version:   1.4.1
-Release:   2%{?gitdate:.%{gitdate}git%{gitversion}}%{?dist}.1
+Release:   2%{?gitdate:.%{gitdate}git%{gitversion}}%{?dist}
 URL:       http://www.x.org
 License:   MIT
 Group:     User Interface/X Hardware Support
@@ -61,9 +61,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man4/void.4*
 
 %changelog
-* Wed May 30 2018 Adam Jackson <ajax@redhat.com> - 1.4.1-2.1
-- Rebuild for xserver 1.20
-
 * Fri Jan 27 2017 Peter Hutterer <peter.hutterer@redhat.com> - 1.4.1-2
 - Rebuild for server 1.19 (#1401643)
 
